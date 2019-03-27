@@ -77,6 +77,13 @@ void draw(){
 	//TH1F *hZAjjQCD1000M	 = (TH1F*)fZAjjQCD1000M->Get(histname); hZAjjQCD1000M  ->Scale(xsecZAjjQCD1000M /NgenZAjjQCD1000M *Lumi);
 	
 
+// --Stack backgrounds(If you need it)
+//THStack* stkBkgs = new THStack("stkBkgs","stkBkgs");
+//	stkBkgs->Add(hSTops);
+//  stkBkgs->Add(hDibos);
+//	stkBkgs->Add(hBKG);
+//  stkBkgs->Add(httbar);
+
 
 
 

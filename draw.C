@@ -67,7 +67,7 @@ void draw(){
 
 
 
-// --Get histogram & Weighting
+// --Get histogram & Normalizing
 	TH1F *hSignal	     = (TH1F*)fSignal	   ->Get(histname); hSignal		   ->Scale(xsecSignal	    /NgenSignal		  *Lumi);
 	TH1F *hBKG		     = (TH1F*)fBKG		   ->Get(histname); hBKG		   ->Scale(xsecBKG		    /NgenBKG		  *Lumi);
 	//TH1F *hZA			 = (TH1F*)fZA		   ->Get(histname); hZA			   ->Scale(xsecZA		    /NgenZA			  *Lumi);

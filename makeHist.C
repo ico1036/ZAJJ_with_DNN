@@ -4,7 +4,7 @@
 #include "TChain.h"
 #include "TH1F.h"
 #include "TH2F.h"
-#include "../../Delphes-3.4.1/classes/DelphesClasses.h"
+#include "/x5/cms/jwkim/Delphes-3.4.1/classes/DelphesClasses.h"
 
 using namespace std;
 
@@ -13,11 +13,11 @@ int main(int argc, char** argv){
 	 TFile* outFile = new TFile(argv[1],"recreate");
      TChain* inChain = new TChain("Delphes");
 
-     //int    nttype = atoi(argv[2]) ; // singla:1 BKG: 0
-     //double ntxsec = atof(argv[3]) ;
-     //double ntgenN = atof(argv[4]) ;
+     int    nttype = atoi(argv[2]) ; // singla:1 BKG: 0
+     double ntxsec = atof(argv[3]) ;
+     double ntgenN = atof(argv[4]) ;
 
-    for(int iFile = 2; iFile<argc; iFile++) {
+    for(int iFile = 5; iFile<argc; iFile++) {
         std::cout << "### InFile " << iFile-1 << " " << argv[iFile] << std::endl;
         inChain->Add(argv[iFile]);
     }
@@ -62,13 +62,13 @@ int main(int argc, char** argv){
 	TH1F* h_dRj1l2	= new TH1F("h_dRj1l2","h_dRj1l2",1000,0,15);
 	TH1F* h_dRj2l1	= new TH1F("h_dRj2l1","h_dRj2l1",1000,0,15);
 	TH1F* h_dRj2l2	= new TH1F("h_dRj2l2","h_dRj2l2",1000,0,15);
-	TH1F* h_dRjj		    = new TH1F("h_dRjj		 "	,"h_dRjj		 ",1000,0,15);
+	TH1F* h_dRjj		    = new TH1F("h_dRjj"	,"h_dRjj",1000,0,15);
 	TH1F* h_deltaPhi_ZAjj	= new TH1F("h_deltaPhi_ZAjj","h_deltaPhi_ZAjj",1000,0,4);
 
 
 
 
-
+// --Event number parameters
 	int totalEvt = (int)inChain->GetEntries();
 	int per99 = totalEvt/99;
 	int per100 = 0;
@@ -77,6 +77,75 @@ int main(int argc, char** argv){
     int step2num =0;
     int step3num =0;
 	double VBFnum=0;
+
+
+
+// --Tree for making ntuples
+	TTree* outTree = new TTree("tree","tree");
+	outTree->Branch("nttype", &nttype);
+
+	double ntele1PT		;
+	double ntele2PT		;
+	double ntele1Eta		;
+	double ntele2Eta		;
+	double ntele1Phi		;
+	double ntele2Phi		;
+	double ntphoPT		;
+	double ntphoEta		;
+	double ntphoPhi		;
+	double ntjet1PT		;
+	double ntjet2PT		;
+	double ntjet1Eta		;	 
+	double ntjet2Eta		;
+	double ntjet1Phi		;
+	double ntjet2Phi		;
+	double nteeM			;
+	double nteeaM			;
+	double ntjjM			;
+	double ntjdEta			;
+	double ntjdPhi			;
+	double ntZpVar			;
+	double ntdRj1l1		;
+	double ntdRj1l2		;
+	double ntdRj2l1		;
+	double ntdRj2l2		;
+	double ntdRjj			;
+	double ntdeltaPhi_ZAjj ;
+	
+	outTree->Branch("ntele1PT",&ntele1PT)		;
+	outTree->Branch("ntele2PT",&ntele2PT)		;
+	outTree->Branch("ntele1Eta",&ntele1Eta)	;
+	outTree->Branch("ntele2Eta",&ntele2Eta)	;
+	outTree->Branch("ntele1Phi",&ntele1Phi)	;
+	outTree->Branch("ntele2Phi",&ntele2Phi)	;
+	outTree->Branch("ntphoPT",&ntphoPT)		;
+	outTree->Branch("ntphoEta",&ntphoEta)		;
+	outTree->Branch("ntphoPhi",&ntphoPhi)		;
+	outTree->Branch("ntjet1PT",&ntjet1PT)		;
+	outTree->Branch("ntjet2PT",&ntjet2PT)		;
+	outTree->Branch("ntjet1Eta",&ntjet1Eta)	; 
+	outTree->Branch("ntjet2Eta",&ntjet2Eta)	;
+	outTree->Branch("ntjet1Phi",&ntjet1Phi)	;
+	outTree->Branch("ntjet2Phi",&ntjet2Phi)	;
+	outTree->Branch("nteeM",&nteeM)			;
+	outTree->Branch("nteeaM",&nteeaM)			;
+	outTree->Branch("ntjjM",&ntjjM)			;
+	outTree->Branch("ntjdEta",&ntjdEta)		;
+	outTree->Branch("ntjdPhi",&ntjdPhi)		;
+	outTree->Branch("ntZpVar",&ntZpVar)		;
+	outTree->Branch("ntdRj1l1",&ntdRj1l1)		;
+	outTree->Branch("ntdRj1l2",&ntdRj1l2)		;
+	outTree->Branch("ntdRj2l1",&ntdRj2l1)		;
+	outTree->Branch("ntdRj2l2",&ntdRj2l2)		;
+	outTree->Branch("ntdRjj",&ntdRjj)			;
+	outTree->Branch("ntdeltaPhi_ZAjj",&ntdeltaPhi_ZAjj);
+	outTree->Branch("nttype",&nttype);
+	outTree->Branch("ntxsec",&ntxsec);
+	outTree->Branch("ntgenN",&ntgenN);
+
+
+
+
 
 	// ---EventLoop start
 	for(int eventLoop=0; eventLoop < totalEvt; eventLoop++) {
@@ -89,8 +158,8 @@ int main(int argc, char** argv){
 			
 		step0num++;
 
-	/////////////////////  --Electron Selection 
-	// ---Electron Loop start
+/////////////////////--Electron Selection 
+		// ---Electron Loop start
 		for(int eleLoop=0; eleLoop<eleTCA->GetEntries(); eleLoop++){
             Electron *elePtr = (Electron*)eleTCA->At(eleLoop);
 
@@ -110,7 +179,7 @@ int main(int argc, char** argv){
 
 
 		
-	/////////////////////  --Photon Selection 
+/////////////////////--Photon Selection 
 	// ---Photon Loop start	
 	for(int phoLoop=0; phoLoop<phoTCA->GetEntries(); phoLoop++){
 			Photon *phoPtr = (Photon*)phoTCA->At(phoLoop);
@@ -139,7 +208,7 @@ int main(int argc, char** argv){
 	    Photon* phoPtr = (Photon*)phoSelTCA->At(0);
 		
 		
-	/////////////////////  --Z mass window
+/////////////////////--Z mass window
 	TLorentzVector ele1Vec = elePtr1->P4();
    	TLorentzVector ele2Vec = elePtr2->P4();
    	TLorentzVector eeVec = ele1Vec + ele2Vec;
@@ -155,7 +224,7 @@ int main(int argc, char** argv){
 		// }
 		// h1_Njet->Fill(jetTCA->GetEntries());
 	
-	/////////////////////  --Jet Selection 
+/////////////////////--Jet Selection 
 	// ---Jet Loop start
 	for(int jetLoop=0; jetLoop<jetTCA->GetEntries(); jetLoop++){
         Jet *jetPtr = (Jet*)jetTCA->At(jetLoop);
@@ -273,7 +342,35 @@ int main(int argc, char** argv){
 		h_dRjj		   ->Fill(dRjj);
 		h_deltaPhi_ZAjj->Fill(deltaPhi_ZAjj);
 	
-
+		ntele1PT  =	elePtr1->PT	;
+		ntele2PT  =	elePtr2->PT	;
+		ntele1Eta =	elePtr1->Eta	;
+		ntele2Eta =	elePtr2->Eta	;
+		ntele1Phi =	elePtr1->Phi	;
+		ntele2Phi =	elePtr2->Phi	;
+		ntphoPT	  = phoPtr->PT		;
+		ntphoEta  = phoPtr->Eta		;
+		ntphoPhi  = phoPtr->Phi		;
+		nteeM	  = eeVec.M()		;
+		nteeaM    = eeaVec.M()		;
+		ntjet1PT  = jetPtr1->PT	;
+		ntjet2PT  = jetPtr2->PT	;
+		ntjet1Eta = jetPtr1->Eta	;
+		ntjet2Eta = jetPtr2->Eta	;
+		ntjet1Phi = jetPtr1->Phi	;
+		ntjet2Phi = jetPtr2->Phi	;
+		ntjjM	  = jjM				;
+		ntjdEta	  = dEta			;
+		ntjdPhi   = deltaPhi		;
+		ntZpVar   = zepp			;
+		ntdRj1l1  = dRj1l1			;
+		ntdRj1l2  = dRj1l2			;
+		ntdRj2l1  = dRj2l1			;
+		ntdRj2l2  = dRj2l2			;
+		ntdRjj	  = dRjj			;
+		ntdeltaPhi_ZAjj = deltaPhi_ZAjj ;
+	
+		outTree->Fill();
 	} //--Event Loop end
 
 

@@ -263,7 +263,7 @@ _,FP = tf.metrics.false_positives(Y, predicted)
 _,FN = tf.metrics.false_negatives(Y, predicted)
 
 sess.run(tf.local_variables_initializer())
-acc_val,corr_val,issig_val = sess.run([accuracy,correct,issig],feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
+prediction,acc_val,corr_val,issig_val = sess.run([hypothesis,accuracy,correct,issig],feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
 
 ########### --ROC unit
 
@@ -271,6 +271,7 @@ tp=sess.run(TP, feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
 tn=sess.run(TN, feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
 fp=sess.run(FP, feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
 fn=sess.run(FN, feed_dict={X: test_x_data, Y:test_y_data, keep_prob:1})
+
 
 corr_val=corr_val.flatten()
 not_corr_val=np.invert(corr_val)
@@ -307,6 +308,10 @@ hist_tn = test_x_data_origin[tn_bool]
 hist_fp = test_x_data_origin[fp_bool]
 hist_pre_sig = test_x_data_origin[pre_sig_bool]
 hist_pre_bkg = test_x_data_origin[pre_bkg_bool]
+
+hist_hypo_sig = prediction[issig_val]
+hist_hypo_bkg = prediction[isbkg_val]
+
 
 print("##### sig ####")
 print(hist_sig)
@@ -347,6 +352,19 @@ print(scale_sig.shape,hist_sig_obj.shape)
 print("##### BKG #####")
 print(scale_bkg.shape,hist_bkg_obj.shape)
 
+#### --Prediction distribution
+#n_bins=50
+#plt.hist(hist_hypo_sig,bins=n_bins,histtype="step",log=True,color='r',label='Signal')
+#plt.hist(hist_hypo_bkg,bins=n_bins,histtype="step",log=True,color='b',label='Background')
+#plt.legend(loc='upper right')
+#plt.title('Prediction')
+#axes=plt.gca()
+#axes.set_ylim([0,100000])
+#plt.savefig('Prediction.png')
+
+
+
+
 #### --Signa and Background
 #n_bins=50
 #plt.hist(hist_sig_obj,bins=n_bins,weights=scale_sig,histtype="step",log=True,alpha=0.7,color='r',label='Signal')
@@ -364,14 +382,14 @@ print(scale_bkg.shape,hist_bkg_obj.shape)
 #plt.savefig('Mjj_FULL_Predicted.png')
 
 #### --Predicted Signal and Predicted Background
-n_bins=70
-plt.hist(hist_pre_sig_obj,bins=n_bins,weights=scale_pre_sig,histtype="step",log=True,ls='--',color='r',label='DNN_signal')
-#plt.hist(hist_pre_bkg_obj,bins=n_bins,weights=scale_pre_bkg,histtype="step",log=True,ls='--',color='b',label='DNN_bkg')
-plt.hist(hist_sig_obj,bins=n_bins,weights=scale_sig,log=True,alpha=0.5,color='r',label='signal')
-#plt.hist(hist_bkg_obj,bins=n_bins,weights=scale_bkg,log=True,alpha=0.5,color='b',label='bkg')
+n_bins=50
+plt.hist(hist_pre_sig_obj,bins=n_bins,weights=scale_pre_sig,histtype="step",log=True,linewidth=1,alpha=1,color='r',label='DNN_signal')
+plt.hist(hist_pre_bkg_obj,bins=n_bins,weights=scale_pre_bkg,histtype="step",log=True,linewidth=1,alpha=1,color='b',label='DNN_bkg')
+plt.hist(hist_sig_obj,bins=n_bins,weights=scale_sig,log=True,alpha=0.3,color='r',label='signal')
+plt.hist(hist_bkg_obj,bins=n_bins,weights=scale_bkg,log=True,alpha=0.3,color='b',label='bkg')
 plt.legend(loc='upper right')
 plt.title('Mjj')
-plt.savefig('Mjj_FULL_Predicted_sig.png')
+plt.savefig('Mjj_FULL_ALL.png')
 
 
 #### --ROC values on MJJ

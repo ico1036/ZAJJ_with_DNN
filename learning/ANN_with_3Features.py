@@ -105,7 +105,7 @@ test_df_copy["ntgenN"]=test_df.ntgenN
 print(" #################### tran / test dataframe ###########################")
 display(train_df_copy.shape)
 display(test_df_copy.shape)
-
+display(test_df_copy)
 
 ################################### --Method2 division of test data s,b ratio
 test_signal_df = test_df_copy[test_df_copy['nttype'] == 1]
@@ -302,12 +302,38 @@ hist_obj=0 # Mjj
 
 hist_sig  = test_x_data_origin[issig_val]
 hist_bkg  = test_x_data_origin[isbkg_val]
+
+
+
+
 hist_tp = test_x_data_origin[tp_bool]
 hist_fn = test_x_data_origin[fn_bool]
 hist_tn = test_x_data_origin[tn_bool]
 hist_fp = test_x_data_origin[fp_bool]
+
 hist_pre_sig = test_x_data_origin[pre_sig_bool]
 hist_pre_bkg = test_x_data_origin[pre_bkg_bool]
+
+
+hist_tn_za             = hist_tn[np.where(hist_tn[:,3]== xsec_za)]
+hist_tn_zaj            = hist_tn[np.where(hist_tn[:,3]== xsec_zaj)]      
+hist_tn_zajjQCD120     = hist_tn[np.where(hist_tn[:,3]== xsec_zajjQCD120)]
+hist_tn_zajjQCD600     = hist_tn[np.where(hist_tn[:,3]== xsec_zajjQCD600)]
+hist_tn_zajjQCD1000    = hist_tn[np.where(hist_tn[:,3]== xsec_zajjQCD1000)]
+hist_tn_ZZ             = hist_tn[np.where(hist_tn[:,3]== xsec_ZZ)]
+hist_tn_tt             = hist_tn[np.where(hist_tn[:,3]== xsec_tt)]
+
+hist_pre_za             = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_za)]
+hist_pre_zaj            = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_zaj)]      
+hist_pre_zajjQCD120     = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_zajjQCD120)]
+hist_pre_zajjQCD600     = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_zajjQCD600)]
+hist_pre_zajjQCD1000    = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_zajjQCD1000)]
+hist_pre_ZZ             = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_ZZ)]
+hist_pre_tt             = hist_pre_bkg[np.where(hist_pre_bkg[:,3]== xsec_tt)]
+
+
+
+
 
 hist_hypo_sig = prediction[issig_val]
 hist_hypo_bkg = prediction[isbkg_val]
@@ -321,45 +347,32 @@ print(hist_bkg)
 hist_sig_obj  = hist_sig[:,hist_obj]
 hist_bkg_obj  = hist_bkg[:,hist_obj]
 hist_tp_obj = hist_tp[:,hist_obj]
-hist_fn_obj = hist_fn[:,hist_obj]
 hist_tn_obj = hist_tn[:,hist_obj]
-hist_fp_obj = hist_fp[:,hist_obj]
-hist_pre_sig_obj = hist_pre_sig[:,hist_obj]
-hist_pre_bkg_obj = hist_pre_bkg[:,hist_obj]
 
 
 
-scale_sig = Lumi * hist_sig[:,3] / hist_sig[:,4]
-scale_bkg = Lumi * hist_bkg[:,3] / hist_bkg[:,4]
-scale_tp = Lumi * hist_tp[:,3] / hist_tp[:,4]
-scale_fp = Lumi * hist_fp[:,3] / hist_fp[:,4]
-scale_tn = Lumi * hist_tn[:,3] / hist_tn[:,4]
-scale_fn = Lumi * hist_fn[:,3] / hist_fn[:,4]
-scale_pre_sig = Lumi * hist_pre_sig[:,3] / hist_pre_sig[:,4]
-scale_pre_bkg = Lumi * hist_pre_bkg[:,3] / hist_pre_bkg[:,4]
+scale_pre_sig           = Lumi * hist_tp[:,3]             / len(hist_pre_sig)
+scale_pre_za            = Lumi * hist_tn_za[:,3]          / len(hist_pre_za)
+scale_pre_zaj           = Lumi * hist_tn_zaj[:,3]         / len(hist_pre_zaj)
+scale_pre_zajjQCD120    = Lumi * hist_tn_zajjQCD120[:,3]  / len(hist_pre_zajjQCD120)
+scale_pre_zajjQCD600    = Lumi * hist_tn_zajjQCD600[:,3]  / len(hist_pre_zajjQCD600)
+scale_pre_zajjQCD1000   = Lumi * hist_tn_zajjQCD1000[:,3] / len(hist_pre_zajjQCD1000)
+scale_pre_ZZ            = Lumi * hist_tn_ZZ[:,3]          / len(hist_pre_ZZ)
+scale_pre_tt            = Lumi * hist_tn_tt[:,3]          / len(hist_pre_tt)
 
 
-print("##### TP #####")
-print(scale_tp.shape,hist_tp_obj.shape)
-print("##### FP #####")
-print(scale_fp.shape,hist_fp_obj.shape)
-print("##### TN #####")
-print(scale_tn.shape,hist_tn_obj.shape)
-print("##### FN #####")
-print(scale_fn.shape,hist_fn_obj.shape)
-print("##### SIGNAL #####")
-print(scale_sig.shape,hist_sig_obj.shape)
-print("##### BKG #####")
-print(scale_bkg.shape,hist_bkg_obj.shape)
+
+#scale_pre_bkg = Lumi * hist_bkg[:,3] / hist_bkg[:,4]
+
 
 #### --Prediction distribution
 #n_bins=50
-#plt.hist(hist_hypo_sig,bins=n_bins,histtype="step",log=True,color='r',label='Signal')
-#plt.hist(hist_hypo_bkg,bins=n_bins,histtype="step",log=True,color='b',label='Background')
+#plt.hist(hist_hypo_sig,bins=n_bins,histtype="step",log=False,color='r',label='Signal')
+#plt.hist(hist_hypo_bkg,bins=n_bins,histtype="step",log=False,color='b',label='Background')
 #plt.legend(loc='upper right')
 #plt.title('Prediction')
-#axes=plt.gca()
-#axes.set_ylim([0,100000])
+##axes=plt.gca()
+##axes.set_ylim([0,100000])
 #plt.savefig('Prediction.png')
 
 
@@ -383,7 +396,7 @@ print(scale_bkg.shape,hist_bkg_obj.shape)
 
 #### --Predicted Signal and Predicted Background
 n_bins=50
-plt.hist(hist_pre_sig_obj,bins=n_bins,weights=scale_pre_sig,histtype="step",log=True,linewidth=1,alpha=1,color='r',label='DNN_signal')
+plt.hist(hist_tp_obj,bins=n_bins,weights=scale_pre_sig,histtype="step",log=True,linewidth=1,alpha=1,color='r',label='DNN_signal')
 plt.hist(hist_pre_bkg_obj,bins=n_bins,weights=scale_pre_bkg,histtype="step",log=True,linewidth=1,alpha=1,color='b',label='DNN_bkg')
 plt.hist(hist_sig_obj,bins=n_bins,weights=scale_sig,log=True,alpha=0.3,color='r',label='signal')
 plt.hist(hist_bkg_obj,bins=n_bins,weights=scale_bkg,log=True,alpha=0.3,color='b',label='bkg')
